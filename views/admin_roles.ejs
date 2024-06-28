@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Roles de los Usuarios</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+    <!-- Custom styles -->
+    <style>
+        body {
+            height: 100vh;
+            background-color: #c4c4c4e0;
+        }
+        .container{
+            display:flex;
+            justify-content: center;
+            align-items:center;
+            /* height:50vh; */
+            width:100%;
+            margin-top: 30px;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .roles{
+            display:flex;
+            align-items:center;
+            justify-content: space-around;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/banner', { showBackButton: true, loggedIn: true }) %>
+    <div class="container">
+        <div class="form-container">
+            <h1>Administrar Roles de Usuarios</h1>
+            <form action="/admin_roles/update" method="POST">
+                <div class="form-group">
+                    <label for="username">Seleccionar Usuario:</label>
+                    <select id="username" name="userId" class="form-control">
+                        <% users.forEach(user => { %>
+                            <option value="<%= user.id %>"><%= user.username %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Roles:</label><br>
+                    <div class="roles">
+                        <% categories.forEach(category => { %>
+                            <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="<%= category.categoria %>" name="newRoles" value="<%= category.categoria %>">
+                                    <label class="form-check-label" for="<%= category.categoria %>"><%= category.categoria %></label>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Actualizar Roles</button>
+            </form>
+            
+            
+        </div>
+    </div>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- jQuery JS (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            <% if (successMessage) { %>
+                Swal.fire({
+                    icon: 'success',
+                    title: '<%= successMessage %>',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            <% } %>
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FSA - Iniciar Sesión</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom styles -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <style>
+        body {
+            height: 100vh;
+            background-color: #c4c4c4e0;
+        }
+        .container{
+            display:flex;
+            justify-content: center;
+            align-items:center;
+            height:50vh;
+            width:100%;
+        }
+        .form-container {
+            width: 600px;
+            background-color: #f8f9fa;
+            margin-top:35px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            h1 {
+                text-align: center;
+                padding: 20px;
+                margin:0;
+                background-color: #1291aa;
+                color:#f8f9fa;
+                border-top-right-radius: 10px;
+                border-top-left-radius: 10px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+        }
+        .cuerpoForm{
+            padding:25px;
+        }
+        .botonContainer{
+            width:100%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            .btn{
+                max-width:375px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <%- include('partials/banner', { showBackButton: false, loggedIn: false }) %>
+
+    <div class="container">
+        <div class="form-container">
+            <div class="tituloForm">
+                <h1>Iniciar Sesión</h1>
+            </div>
+            <div class="cuerpoForm">
+                <form action="/login" method="POST">
+                    <div class="form-group">
+                        <label for="username">Usuario:</label>
+                        <select type="text" id="username" name="username" class="form-control">
+                            <% users.forEach(user => { %>
+                                <option value="<%=user.username%>"><%= user.username %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña:</label>
+                        <input type="password" id="password" name="password" class="form-control">
+                    </div>
+                    <div class="botonContainer">
+                        <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

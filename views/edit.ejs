@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Datos</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom styles -->
+    <style>
+        body {
+            height: 100vh;
+            background-color: #c4c4c4e0;
+        }
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .delete-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/banner', { showBackButton: true, loggedIn: true }) %>
+    <div class="container">
+        <h1 class="mt-5">Editar Datos</h1>
+        <form action="/edit/<%= item.id %>" method="POST">
+            <div class="form-group">
+                <label for="categoria">Categoría:</label>
+                <input type="text" id="categoria" name="categoria" class="form-control" value="<%= item.categoria %>">
+            </div>
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" value="<%= item.nombre %>">
+            </div>
+            <div class="form-group">
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" name="descripcion" class="form-control" rows="4"><%= item.descripcion %></textarea>
+            </div>
+            <div class="form-group">
+                <label for="link">Link:</label>
+                <input type="text" id="link" name="link" class="form-control" value="<%= item.link %>">
+            </div>
+            <div class="form-group">
+                <label for="vigencia">Vigencia:</label>
+                <input type="text" id="vigencia" name="vigencia" class="form-control" value="<%= item.vigencia %>">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Guardar Cambios</button>
+            <form action="/delete/<%= item.id %>" method="POST" class="delete-button">
+                <button type="submit" class="btn btn-danger btn-block">Eliminar Registro</button>
+            </form> 
+        </form>
+       
+        
+    </div>
+</body>
+</html>
