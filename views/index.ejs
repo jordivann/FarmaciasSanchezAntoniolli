@@ -62,6 +62,20 @@
             height: calc(100vh - 56px - 56px); /* Descuenta la altura del header y del footer */
             padding: 0;
         }
+        .modal-header{
+            max-height:2px !important   ;
+            background-color: rgba(0, 124, 152,.7);
+            display:flex;
+            align-items:center;
+            justify-content:flex-end;
+        }
+        .modal-footer{
+            max-height: 10px;
+            display:flex;
+            align-items:center;
+            justify-content:flex-end;
+        }
+
 
         #powerBIFrame {
             width: 100%;
@@ -74,7 +88,7 @@
     <div class="container">
         <div class="table-container">
             <div class="titulo">
-                <h1 class="text-center mb-4">Listado de PowerBi</h1>
+                <h1 class="text-center mb-4">Listado de PowerBi FSA</h1>
             </div>
             <% if (isAdmin) { %>
                 <div class="contenedorDerecho">
@@ -123,42 +137,44 @@
         <div class="modal-dialog modal-fullscreen" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="powerBIModalLabel">Power BI Report</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <iframe id="powerBIFrame" width="100%" height="100%" frameborder="0" allowFullScreen="true"></iframe>
+                    <div id="notAvailableMessage" style="display:none; color: red; text-align: center;">
+                        <%- include('partials/banner', { showBackButton: false, loggedIn: false }) %>
+                        El informe que está intentando ver no está disponible aún. Para más información comunicarse con el Bicho Barber, e intentaremos resolver sus dudas.
+                    </div>
+                    <iframe id="powerBIFrame" width="100%" height="100%" frameborder="0" allowFullScreen="true" style="display:none;"></iframe>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button> -->
                 </div>
             </div>
         </div>
     </div>
 
-<!--     
-    <div class="modal full-screen fade" id="powerBIModal" tabindex="-1" role="dialog" aria-labelledby="powerBIModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="powerBIModalLabel">Power BI Report</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                        <!-- Botón para eliminar -->
+    <script>
+        $(document).ready(function() {
+            $('.open-powerbi-modal').on('click', function(e) {
+                e.preventDefault();
+                var link = $(this).data('link');
+                if (link === "Link") {
+                    $('#notAvailableMessage').show();
+                    $('#powerBIFrame').hide();
+                } else {
+                    $('#notAvailableMessage').hide();
+                    $('#powerBIFrame').attr('src', link).show();
+                }
+                $('#powerBIModal').modal('show');
+            });
+        });
+    </script>
 
-                <div class="modal-body">
-                    <iframe id="powerBIFrame" width="100%" height="100%" frameborder="0" allowFullScreen="true"></iframe>
-                </div>
-                <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                </div> -->
-            </div>
-        </div>
-    </div> -->
+</body>
+</html>
+<!-- 
     <script>
         $(document).ready(function() {
             $('.open-powerbi-modal').on('click', function(e) {
@@ -168,7 +184,4 @@
                 $('#powerBIModal').modal('show');
             });
         });
-    </script>
-        
-</body>
-</html>
+    </script> -->
