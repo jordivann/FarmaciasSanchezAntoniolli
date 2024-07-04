@@ -20,15 +20,14 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <style>
-        body{
+        body {
             background-color: #c4c4c4e0;
         }
-        .container{
-            display:flex;
+        .container {
+            display: flex;
             justify-content: center;
-            align-items:center;
-            /* height:50vh; */
-            width:100%;
+            align-items: center;
+            width: 100%;
             margin-top: 30px;
         }
         .table-container {
@@ -36,55 +35,51 @@
             margin: 0 auto;
             border-radius: 10px;
         }
-        .table{
+        .table {
             background-color: #f1f1f1;
             border-radius: 10px;
         }
-        .admin-container{
-            display:flex;
-            align-items:center;
+        .admin-container {
+            display: flex;
+            align-items: center;
             justify-content: space-around;
             width: 300px;
         }
-        .contenedorDerecho{
-            display:flex;
-            justify-content:flex-end;
+        .contenedorDerecho {
+            display: flex;
+            justify-content: flex-end;
             margin-top: 10px;
-            margin-bottom:10px;
+            margin-bottom: 10px;
         }
         .modal-fullscreen {
-        width: 100%;
-        height: 100%;
-        margin: 5px;
-        padding: 0;
-        max-width: 100%;
+            width: 100%;
+            height: 100%;
+            margin: 5px;
+            padding: 0;
+            max-width: 100%;
         }
-
         .modal-fullscreen .modal-content {
             height: 100vh;
             border: 0;
             border-radius: 0;
         }
-
         .modal-fullscreen .modal-body {
             height: calc(100vh - 56px - 56px); /* Descuenta la altura del header y del footer */
             padding: 0;
         }
-        .modal-header{
-            max-height:2px !important   ;
-            background-color: rgba(0, 124, 152,.7);
-            display:flex;
-            align-items:center;
-            justify-content:flex-end;
+        .modal-header {
+            max-height: 2px !important;
+            background-color: rgba(0, 124, 152, .7);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
         }
-        .modal-footer{
+        .modal-footer {
             max-height: 10px;
-            display:flex;
-            align-items:center;
-            justify-content:flex-end;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
         }
-
-
         #powerBIFrame {
             width: 100%;
             height: 100%;
@@ -94,9 +89,8 @@
 <body>
     <%- include('partials/banner', { showBackButton: false, loggedIn: true }) %>
     
-    <%- include('partials/nav')%>
+    <%- include('partials/nav') %>
     <div class="container">
-        
         <div class="table-container">
             <div class="titulo">
                 <h1 class="text-center mb-4">Listado de PowerBi FSA</h1>
@@ -125,18 +119,20 @@
                 </thead>
                 <tbody>
                     <% data.forEach(item => { %>
-                        <tr>
-                            <td><%= item.categoria %></td>
-                            <td><%= item.nombre %></td>
-                            <td><%= item.descripcion %></td>
-                            <td><a href="#" class="btn btn-sm btn-info open-powerbi-modal" data-link="<%= item.link %>">Enlace</a></td>
-                            <td><%= item.vigencia %></td>
-                            <% if (isAdmin) { %>
-                                <td>
-                                    <a href="/edit/<%= item.id %>" class="btn btn-sm btn-primary">Editar</a>
-                                </td>
-                            <% } %>
-                        </tr>
+                        <% if (item.vigencia === "Vigente" || isAdmin) { %>
+                            <tr>
+                                <td><%= item.categoria %></td>
+                                <td><%= item.nombre %></td>
+                                <td><%= item.descripcion %></td>
+                                <td><a href="#" class="btn btn-sm btn-info open-powerbi-modal" data-link="<%= item.link %>">Enlace</a></td>
+                                <td><%= item.vigencia %></td>
+                                <% if (isAdmin) { %>
+                                    <td>
+                                        <a href="/edit/<%= item.id %>" class="btn btn-sm btn-primary">Editar</a>
+                                    </td>
+                                <% } %>
+                            </tr>
+                        <% } %>
                     <% }); %>
                 </tbody>
             </table>
