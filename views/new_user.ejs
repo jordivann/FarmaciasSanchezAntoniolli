@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Nuevo Usuario</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom styles -->
+    <style>
+        body {
+            background-color: #c4c4c4e0;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #f1f1f1;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <% include('partials/banner', { showBackButton: false, loggedIn: true }) %>
+    <div class="container">
+        <div class="form-container">
+            <h2 class="text-center mb-4">Agregar Nuevo Usuario</h2>
+          <!-- new_user.ejs -->
+<form action="/users/new" method="POST">
+    <div class="form-group">
+        <label for="username">Nombre de Usuario</label>
+        <input type="text" id="username" name="username" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label for="isAdmin">¿Es administrador?</label>
+        <input type="checkbox" id="isAdmin" name="isAdmin" class="form-check-input">
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+</form>
+
+        </div>
+    </div>
+</body>
+</html>

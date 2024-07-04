@@ -86,6 +86,7 @@
 <body>
     <%- include('partials/banner', { showBackButton: false, loggedIn: true }) %>
     <div class="container">
+       
         <div class="table-container">
             <div class="titulo">
                 <h1 class="text-center mb-4">Listado de PowerBi FSA</h1>
@@ -93,9 +94,13 @@
             <% if (isAdmin) { %>
                 <div class="contenedorDerecho">
                     <div class="admin-container">
-                        <a href="/new" class="btn btn-primary">Agregar nuevo</a>
+                        <a href="/new" class="btn btn-sm btn-primary">Agregar nuevo</a>
                         
-                        <a href="/admin_roles" class="btn btn-primary">Usuarios</a>
+                        <a href="/admin_roles" class="btn btn-sm btn-primary">Roles</a>
+                      
+                    
+                                <a href="/users" class="btn btn-sm btn-primary">Editar Usuario</a>
+                          
                         
                     </div>
                 </div>
@@ -144,7 +149,8 @@
                 <div class="modal-body">
                     <div id="notAvailableMessage" style="display:none; color: red; text-align: center;">
                         <%- include('partials/banner', { showBackButton: false, loggedIn: false }) %>
-                        El informe que está intentando ver no está disponible aún. Para más información comunicarse con el Bicho Barber, e intentaremos resolver sus dudas.
+                        Informe no disponible
+                        <!-- El informe que está intentando ver no está disponible aún. Para más información comunicarse con el Bicho Barber, e intentaremos resolver sus dudas. -->
                     </div>
                     <iframe id="powerBIFrame" width="100%" height="100%" frameborder="0" allowFullScreen="true" style="display:none;"></iframe>
                 </div>
@@ -174,14 +180,3 @@
 
 </body>
 </html>
-<!-- 
-    <script>
-        $(document).ready(function() {
-            $('.open-powerbi-modal').on('click', function(e) {
-                e.preventDefault();
-                var link = $(this).data('link');
-                $('#powerBIFrame').attr('src', link);
-                $('#powerBIModal').modal('show');
-            });
-        });
-    </script> -->
