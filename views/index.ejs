@@ -7,7 +7,10 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Custom styles -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-LIeMflLcGuzS4m0FkPO8G71r3osESqOmFnFVbfaabA3M3JFzK4cgAAd2cF+LcMnm2rT6H+LXmGypG2bN2m8J7g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
@@ -85,6 +88,8 @@
 </head>
 <body>
     <%- include('partials/banner', { showBackButton: false, loggedIn: true }) %>
+    
+    <%- include('partials/nav')%>
     <div class="container">
        
         <div class="table-container">
@@ -95,13 +100,8 @@
                 <div class="contenedorDerecho">
                     <div class="admin-container">
                         <a href="/new" class="btn btn-sm btn-primary">Agregar nuevo</a>
-                        
                         <a href="/admin_roles" class="btn btn-sm btn-primary">Roles</a>
-                      
-                    
-                                <a href="/users" class="btn btn-sm btn-primary">Editar Usuario</a>
-                          
-                        
+                        <a href="/users" class="btn btn-sm btn-primary">Editar Usuario</a>
                     </div>
                 </div>
             <% } %>

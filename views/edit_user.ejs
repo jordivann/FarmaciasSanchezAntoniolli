@@ -30,7 +30,10 @@
     </style>
 </head>
 <body>
-    <% include('partials/banner', { showBackButton: true, loggedIn: true }) %>
+    <%- include('partials/banner', { showBackButton: true, loggedIn: true }) %>  
+        
+    <%- include('partials/nav')%>
+
     <div class="container">
         <h1 class="mt-5">Editar Usuario</h1>
         <form action="/edit_user/<%= user.id %>" method="POST">

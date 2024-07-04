@@ -91,11 +91,13 @@ app.get('/', requireLogin, (req, res) => {
 
 app.get('/edit/:id', requireAdmin, (req, res) => {
     const id = req.params.id;
+    const isAdmin = req.session.isAdmin === true;
     pgClient.query('SELECT * FROM data WHERE id = $1', [id], (err, result) => {
         if (err) {
             throw err;
         }
-        res.render('edit', { item: result.rows[0] });
+        
+        res.render('edit', { item: result.rows[0] ,isAdmin});
     });
 });
 
@@ -118,17 +120,19 @@ app.get('/users', requireAdmin, (req, res) => {
             res.status(500).send('Error al obtener usuarios');
         } else {
             const users = result.rows;
-            res.render('users_index', { users });
+            const isAdmin = req.session.isAdmin === true;
+            res.render('users_index', { users, isAdmin});
         }
     });
 });
 
 
 // Define la ruta para mostrar el formulario de nuevo usuario
-app.get('/users/new', (req, res) => {
+app.get('/users/new', requireAdmin, (req, res) => {
     // Verifica si el usuario actual es administrador
     if (req.session.isAdmin) {
-        res.render('new_user'); // Renderiza la vista EJS para agregar nuevo usuario
+        const isAdmin = req.session.isAdmin === true;
+        res.render('new_user', {isAdmin}); // Renderiza la vista EJS para agregar nuevo usuario
     } else {
         res.status(403).send('Acceso denegado'); // Si no es administrador, devuelve un error 403
     }
@@ -170,7 +174,7 @@ app.post('/users/new', async (req, res) => {
 
 
 // Ruta para cargar el formulario de edición de usuario
-app.get('/edit_user/:id', async (req, res) => {
+app.get('/edit_user/:id', requireAdmin, async (req, res) => {
     const userId = req.params.id;
 
     try {
@@ -182,7 +186,8 @@ app.get('/edit_user/:id', async (req, res) => {
         }
 
         const user = rows[0];
-        res.render('edit_user', { user }); // Renderiza el formulario de edición con los datos del usuario
+        const isAdmin = req.session.isAdmin === true;
+        res.render('edit_user', { user, isAdmin }); // Renderiza el formulario de edición con los datos del usuario
     } catch (err) {
         console.error('Error al cargar formulario de edición:', err);
         res.status(500).send('Error al cargar formulario de edición');
@@ -221,7 +226,9 @@ app.post('/edit_user/:id', async (req, res) => {
 
 
 app.get('/new', requireAdmin, (req, res) => {
-    res.render('new');
+    
+    const isAdmin = req.session.isAdmin === true;
+    res.render('new', {isAdmin});
 });
 
 app.post('/new', requireAdmin, (req, res) => {
@@ -241,7 +248,9 @@ app.get('/login', (req, res) => {
             console.error('Error al ejecutar la consulta:', err);
             res.status(500).send('Error al obtener los nombres de usuario');
         } else {
-            res.render('login', { users: result.rows });
+            
+            const isAdmin = req.session.isAdmin === true;
+            res.render('login', { users: result.rows, isAdmin });
         }
     });
 });
@@ -296,7 +305,9 @@ app.get('/admin_roles', requireAdmin, (req, res) => {
                 user.rolesText = user.roles.join(', '); // Crear rolesText para mostrar en la vista
             });
             // Renderizar la vista 'admin_roles' con los usuarios y categorías obtenidos
-            res.render('admin_roles', { users, categories, successMessage: req.session.successMessage });
+            
+            const isAdmin = req.session.isAdmin === true;
+            res.render('admin_roles', { users, categories, successMessage: req.session.successMessage, isAdmin });
             // Limpiar el mensaje de éxito después de mostrarlo una vez
             req.session.successMessage = null;
         });

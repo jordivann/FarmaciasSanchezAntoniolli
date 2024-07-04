@@ -10,6 +10,7 @@
     <style>
         body {
             background-color: #c4c4c4e0;
+            min-height: 110vh;
         }
         .container {
             display: flex;
@@ -35,7 +36,9 @@
     </style>
 </head>
 <body>
-    <% include('partials/banner', { showBackButton: false, loggedIn: true }) %>
+    <%- include('partials/banner', { showBackButton: true, loggedIn: true }) %>
+        
+    <%- include('partials/nav')%>
     <div class="container">
         <div class="table-container">
             <div class="titulo">

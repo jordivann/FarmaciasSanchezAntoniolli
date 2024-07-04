@@ -1,0 +1,113 @@
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0; /* Asegura que no haya margen por defecto */
+    padding: 0; /* Asegura que no haya relleno por defecto */
+}
+.sidenav {
+    height: 100%;
+    width: 3.7rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #252525;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 1em;
+    z-index: 1; /* Asegura que esté debajo del contenido principal */
+}
+.sidenav a {
+    padding: 8px 8px 8px 16px;
+    text-decoration: none;
+    font-size: 1.1em;
+    width:100%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: 0.3s;
+}
+.sidenav a i {
+    margin-right: 16px;
+    width:1em;
+}
+.sidenav a span {
+    display:none;
+}
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+.togglebtn {
+    position: absolute;
+    border-top-left-radius: .3em;
+    border-bottom-right-radius: .3em;
+    border-bottom-left-radius: .3em;
+    top: 10px;
+    right: 10px;
+    width:1em;
+    height: 1em;
+    background-color:#ea9e04;
+    font-size: 2em;
+    cursor: pointer;
+    color: #007c98;
+    z-index: 99;
+    transition: all .6s;
+
+    display:flex;
+    align-items:center;
+    justify-content: center;
+}
+.sidenav.collapsed a i {
+    margin: 0;
+    padding:0;
+    text-align: center;
+    width: 100%;
+    
+}
+.sidenav.collapsed .togglebtn{
+    border-top-right-radius: .3em;
+    border-bottom-left-radius: 0;
+
+}
+.sidenav.collapsed .togglebtn i.fa-bars {
+    display: block; 
+}
+.sidenav:not(.collapsed) a span {
+    display: inline-block;
+}
+.menuAdmin,
+.menu{ 
+    margin-top:3em;
+}
+</style>
+<div id="mySidenav" class="sidenav collapsed">
+    <span class="togglebtn" onclick="toggleNav()">x</span>
+    <% if (isAdmin) { %>
+        <div class="menuAdmin">
+            <a href="/new" class="btn btn-sm btn-primary"><i>New</i><span>Nuevo PowerBi</span></a>
+            <a href="/users" class="btn btn-sm btn-primary"><i>Users</i><span>Usuarios</span></a>
+            <a href="/admin_roles" class="btn btn-sm btn-primary"><i>Roles</i><span>Roles usuarios</span></a>
+        </div>
+    <% } %>
+    <div class="menu">
+        <a href="/"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="/admin_roles"><i class="fas fa-info-circle"></i><span>About</span></a>
+        <a href="#"><i class="fas fa-concierge-bell"></i><span>Services</span></a>
+        <a href="#"><i class="fas fa-envelope"></i><span>Contact</span></a>
+    </div>
+</div>
+
+<script>
+    function toggleNav() {
+        const sidenav = document.getElementById("mySidenav");
+
+        if (sidenav.classList.contains('collapsed')) {
+            sidenav.classList.remove('collapsed');
+            sidenav.style.width = "17em"; /* Ancho completo del navbar desplegado */
+        } else {
+            sidenav.classList.add('collapsed');
+            sidenav.style.width = "3.7rem"; /* Ancho mínimo del navbar plegado */
+        }
+    }
+</script>
