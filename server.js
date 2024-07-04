@@ -194,6 +194,28 @@ app.get('/edit_user/:id', requireAdmin, async (req, res) => {
     }
 });
 
+// Ruta para eliminar usuario
+app.post('/delete_user/:id', requireAdmin, async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const query = 'DELETE FROM users WHERE id = $1 RETURNING *';
+        const { rows } = await pgClient.query(query, [userId]);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Usuario no encontrado');
+        }
+
+        // Configurar el mensaje de éxito en la sesión para mostrarlo en la próxima carga de página
+        req.session.successMessage = 'Usuario eliminado correctamente';
+        res.redirect('/admin_roles'); // Redirige después de eliminar
+    } catch (err) {
+        console.error('Error al eliminar usuario:', err);
+        res.status(500).send('Error al eliminar usuario');
+    }
+});
+
+
 
 // Ruta para editar usuario
 app.post('/edit_user/:id', async (req, res) => {
