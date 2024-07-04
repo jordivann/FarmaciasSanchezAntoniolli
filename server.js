@@ -281,7 +281,6 @@ app.get('/logout', (req, res) => {
         res.redirect('/');
     });
 });
-
 app.get('/admin_roles', requireAdmin, (req, res) => {
     // Obtener todas las categorías disponibles desde la tabla 'data'
     pgClient.query('SELECT DISTINCT categoria FROM data', (err, resultCategories) => {
@@ -313,6 +312,8 @@ app.get('/admin_roles', requireAdmin, (req, res) => {
         });
     });
 });
+
+
 
 // Ruta para modificar roles de usuarios
 app.post('/admin_roles/update', requireAdmin, (req, res) => {
