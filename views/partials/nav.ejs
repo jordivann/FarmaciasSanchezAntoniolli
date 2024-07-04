@@ -89,6 +89,7 @@ body {
     margin-top: 2px;
 }
 </style>
+<% if (isAdmin) { %>
 <div id="mySidenav" class="sidenav collapsed">
     <span class="togglebtn" onclick="toggleNav()"><i class="fas fa-bars" id="toggle"></i></span>
     <% if (isAdmin) { %>
@@ -100,11 +101,14 @@ body {
     <% } %>
     <div class="menu">
         <a href="/"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="/admin_roles"><i class="fas fa-info-circle"></i><span>About</span></a>
-        <a href="#"><i class="fas fa-concierge-bell"></i><span>Services</span></a>
-        <a href="#"><i class="fas fa-envelope"></i><span>Contact</span></a>
+        <% if (isAdmin) { %>
+            <a href="/admin_roles"><i class="fas fa-info-circle"></i><span>About</span></a>
+        <% } %>
+       
+       
     </div>
 </div>
+<% } %>
 
 <script>
     function toggleNav() {
