@@ -29,7 +29,6 @@ body {
     transition: 0.3s;
 }
 .sidenav a i {
-    margin-right: 16px;
     width:1em;
 }
 .sidenav a span {
@@ -43,6 +42,9 @@ body {
     border-top-left-radius: .3em;
     border-bottom-right-radius: .3em;
     border-bottom-left-radius: .3em;
+
+    padding:10px;
+
     top: 10px;
     right: 10px;
     width:1em;
@@ -57,12 +59,14 @@ body {
     display:flex;
     align-items:center;
     justify-content: center;
+    i{  
+    font-size:.5em;
+    }
 }
 .sidenav.collapsed a i {
     margin: 0;
-    padding:0;
     text-align: center;
-    width: 100%;
+    width: 95%;
     
 }
 .sidenav.collapsed .togglebtn{
@@ -80,14 +84,18 @@ body {
 .menu{ 
     margin-top:3em;
 }
+.botonAdmin{
+    border: 2px solid #007c98;
+    margin-top: 2px;
+}
 </style>
 <div id="mySidenav" class="sidenav collapsed">
-    <span class="togglebtn" onclick="toggleNav()">x</span>
+    <span class="togglebtn" onclick="toggleNav()"><i class="fas fa-bars" id="toggle"></i></span>
     <% if (isAdmin) { %>
         <div class="menuAdmin">
-            <a href="/new" class="btn btn-sm btn-primary"><i>New</i><span>Nuevo PowerBi</span></a>
-            <a href="/users" class="btn btn-sm btn-primary"><i>Users</i><span>Usuarios</span></a>
-            <a href="/admin_roles" class="btn btn-sm btn-primary"><i>Roles</i><span>Roles usuarios</span></a>
+            <a href="/new" class="btn btn-sm botonAdmin"><i class="fas fa-plus"></i><span>Nuevo PowerBi</span></a>
+            <a href="/users" class="btn btn-sm botonAdmin"><i class="fas fa-user"></i><span>Usuarios</span></a>
+            <a href="/admin_roles" class="btn btn-sm botonAdmin"><i class="fas fa-user-cog"></i><span>Roles usuarios</span></a>
         </div>
     <% } %>
     <div class="menu">
@@ -101,13 +109,19 @@ body {
 <script>
     function toggleNav() {
         const sidenav = document.getElementById("mySidenav");
-
+        const toggle = document.getElementById("toggle");
         if (sidenav.classList.contains('collapsed')) {
+            // Abrir el menú lateral
             sidenav.classList.remove('collapsed');
-            sidenav.style.width = "17em"; /* Ancho completo del navbar desplegado */
+            sidenav.style.width = "17em"; 
+            toggle.classList.remove('fa-bars');
+            toggle.classList.add('fa-times'); // Cambiar a icono de cruz
         } else {
+            // Cerrar el menú lateral
             sidenav.classList.add('collapsed');
-            sidenav.style.width = "3.7rem"; /* Ancho mínimo del navbar plegado */
+            sidenav.style.width = "3.7rem";
+            toggle.classList.remove('fa-times'); // Cambiar de vuelta a icono de bars
+            toggle.classList.add('fa-bars');
         }
     }
 </script>
