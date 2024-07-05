@@ -209,7 +209,7 @@ app.post('/delete_user/:id', requireAdmin, async (req, res) => {
 
         // Configurar el mensaje de éxito en la sesión para mostrarlo en la próxima carga de página
         req.session.successMessage = 'Usuario eliminado correctamente';
-        res.redirect('/admin_roles'); // Redirige después de eliminar
+        res.redirect('/users'); // Redirige después de eliminar
     } catch (err) {
         console.error('Error al eliminar usuario:', err);
         res.status(500).send('Error al eliminar usuario');
