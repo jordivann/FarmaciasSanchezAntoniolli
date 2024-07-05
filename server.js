@@ -138,38 +138,39 @@ app.get('/users/new', requireAdmin, (req, res) => {
     }
 });
 
-// Define la ruta para manejar la creación de un nuevo usuario
-// Define la ruta para manejar la creación de un nuevo usuario
+//Nuevo Usuario
+
 app.post('/users/new', async (req, res) => {
-    const { username, password, isAdmin } = req.body; // Obtiene los datos del formulario
+    const { username, password, email } = req.body;
+    let { isAdmin } = req.body;
+
+    // Asegúrate de que isAdmin tenga un valor predeterminado de false si no está presente en la solicitud
+    if (isAdmin === undefined) {
+        isAdmin = false;
+    }
 
     try {
-        // Verificar que se haya enviado la contraseña
         if (!password) {
             return res.status(400).send('Debe proporcionar una contraseña');
         }
 
-        // Hashear la contraseña (utilizando bcrypt)
-        const hashedPassword = await bcrypt.hash(password, 10); // 10 es el costo de hashing
-
-        // Preparar la consulta SQL para insertar el nuevo usuario
         const query = `
             INSERT INTO users (username, password, isAdmin, email)
             VALUES ($1, $2, $3, $4)
             RETURNING *
         `;
-        const values = [username, hashedPassword, isAdmin, null]; // Ajustar según los valores que puedas o quieras proporcionar
+        const values = [username, password, isAdmin, email];
 
-        // Ejecutar la consulta SQL usando pgClient
         const result = await pgClient.query(query, values);
 
-        // Redirige a la página de lista de usuarios después de agregar
         res.redirect('/admin_roles');
     } catch (err) {
         console.error('Error al agregar usuario:', err);
-        res.status(500).send('Error al agregar usuario'); // Maneja el error si ocurre
+        res.status(500).send('Error al agregar usuario');
     }
 });
+
+
 
 
 
@@ -218,6 +219,7 @@ app.post('/delete_user/:id', requireAdmin, async (req, res) => {
 
 
 // Ruta para editar usuario
+// Ruta para editar usuario sin encriptar la contraseña
 app.post('/edit_user/:id', async (req, res) => {
     const userId = req.params.id;
     const { username, password, isAdmin } = req.body;
@@ -225,10 +227,11 @@ app.post('/edit_user/:id', async (req, res) => {
     try {
         let query, values;
         if (password) {
-            console.log(`Contraseña enviada: ${password}`); // Mostrar la contraseña enviada
+            // Actualizar con nueva contraseña
             query = 'UPDATE users SET username = $1, password = $2, isAdmin = $3 WHERE id = $4 RETURNING *';
             values = [username, password, isAdmin, userId];
         } else {
+            // Actualizar sin cambiar la contraseña
             query = 'UPDATE users SET username = $1, isAdmin = $2 WHERE id = $3 RETURNING *';
             values = [username, isAdmin, userId];
         }
@@ -244,6 +247,7 @@ app.post('/edit_user/:id', async (req, res) => {
         res.status(500).send('Error al editar usuario');
     }
 });
+
 
 
 
