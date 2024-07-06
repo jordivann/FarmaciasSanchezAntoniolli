@@ -38,6 +38,16 @@
                 width:50%;
             }
         }
+        .logo{
+            bottom:0;
+            display:flex;
+            align-items:center;
+            justify-content: center;
+            width:100%;
+            img{
+                width:40%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -64,12 +74,44 @@
             </div>
             <div class="botones">
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                
+                <button type="button" class="btn btn-danger" onclick="deleteUser('<%= user.id %>')">Eliminar Usuario</button>
             </div>
         </form>
-        <form action="/delete_user/<%= user.id %>" method="POST" class="delete-button">
-            <button type="submit"   class="btn btn-danger">Eliminar Usuario</button>
-        </form>
     </div>
+    <div class="logo">
+        <img src="./../images/Logo azul.png" alt="FSA" class="logo-img">
+    </div>
+    <script>
+        function deleteUser(userId) {
+            fetch(`/delete_user/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json(); // Parsear la respuesta JSON
+                } else {
+                    throw new Error('Error al eliminar usuario');
+                }
+            })
+            .then(data => {
+                if (data.message === 'Usuario eliminado correctamente') {
+                    alert(data.message);
+                    window.location.href = '/users'; // Redirigir después de la eliminación
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al eliminar usuario');
+            });
+        }
+        </script>
+        
+        
 </body>
 </html>

@@ -196,6 +196,7 @@ app.get('/edit_user/:id', requireAdmin, async (req, res) => {
 });
 
 // Ruta para eliminar usuario
+
 app.post('/delete_user/:id', requireAdmin, async (req, res) => {
     const userId = req.params.id;
 
@@ -204,18 +205,16 @@ app.post('/delete_user/:id', requireAdmin, async (req, res) => {
         const { rows } = await pgClient.query(query, [userId]);
 
         if (rows.length === 0) {
-            return res.status(404).send('Usuario no encontrado');
+            return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
-        // Configurar el mensaje de éxito en la sesión para mostrarlo en la próxima carga de página
-        req.session.successMessage = 'Usuario eliminado correctamente';
-        res.redirect('/users'); // Redirige después de eliminar
+        // No es necesario configurar un mensaje de éxito en la sesión aquí
+        res.status(200).json({ message: 'Usuario eliminado correctamente' });
     } catch (err) {
         console.error('Error al eliminar usuario:', err);
-        res.status(500).send('Error al eliminar usuario');
+        res.status(500).json({ message: 'Error al eliminar usuario' });
     }
 });
-
 
 
 // Ruta para editar usuario
@@ -241,7 +240,7 @@ app.post('/edit_user/:id', async (req, res) => {
             return res.status(404).send('Usuario no encontrado');
         }
 
-        res.redirect('/admin_roles'); // Redirige después de editar
+        res.redirect('/'); // Redirige después de editar
     } catch (err) {
         console.error('Error al editar usuario:', err);
         res.status(500).send('Error al editar usuario');

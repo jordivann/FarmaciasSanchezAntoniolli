@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Nuevo Usuario</title>
+    <title>Nuevo Usuario FSA</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Custom styles -->
@@ -19,41 +19,66 @@
             justify-content: center;
             align-items: center;
             margin-top: 30px;
+            width:100%;
         }
         .form-container {
-            max-width: 400px;
+            width: 850px;
             margin: 0 auto;
             background-color: #f1f1f1;
-            padding: 20px;
+            padding: 1em 6em;
             border-radius: 10px;
+        }
+        .center{
+            display:flex;
+            align-items:center;
+            justify-content: center;
+            flex-flow: column wrap;
+        }
+        .isAdmin{
+            display:flex;
+        }
+        .logo{
+            bottom:0;
+            display:flex;
+            align-items:center;
+            justify-content: center;
+            width:100%;
+            img{
+                width:40%;
+            }
         }
     </style>
 </head>
 <body>
-    <% include('partials/banner', { showBackButton: false, loggedIn: true }) %>
-        
+    <%- include('partials/banner', { showBackButton: true, loggedIn: true }) %> 
     <%- include('partials/nav')%>
     <div class="container">
         <div class="form-container">
             <h2 class="text-center mb-4">Agregar Nuevo Usuario</h2>
           <!-- new_user.ejs -->
-<form action="/users/new" method="POST">
-    <div class="form-group">
-        <label for="username">Nombre de Usuario</label>
-        <input type="text" id="username" name="username" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" name="password" class="form-control" required>
-    </div>
-    <div class="form-group">
-        <label for="isAdmin">¿Es administrador?</label>
-        <input type="checkbox" id="isAdmin" name="isAdmin" class="form-check-input">
-    </div>
-    <button type="submit" class="btn btn-primary">Guardar Usuario</button>
-</form>
+            <form action="/users/new" method="POST">
+                <div class="form-group">
+                    <label for="username">Nombre de Usuario</label>
+                    <input type="text" id="username" name="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <div class="center">
+                    <div class="form-group isAdmin">
+                        <input type="checkbox" id="isAdmin" name="isAdmin" class="form-check-input">
+                        <label for="isAdmin">¿Es administrador?</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+                </div>
+            </form>
 
         </div>
+    </div>
+    
+    <div class="logo">
+        <img src="./../images/Logo azul.png" alt="Logo" class="logo-img">
     </div>
 </body>
 </html>

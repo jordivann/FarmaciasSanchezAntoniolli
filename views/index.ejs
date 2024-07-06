@@ -92,6 +92,31 @@
                 width:40%;
             }
         }
+        .center{
+            display:flex;
+            align-items:center;
+            justify-content: center;
+        }
+        .admin-container{
+            width:100%;
+            display:flex;
+            align-items:center;
+            justify-content: flex-end;
+            gap: 2em;
+        }
+        .botonAdmin{
+            display:flex;
+            align-items:center;
+            max-width:500px;
+            gap:5px;
+            .fa-plus{
+                font-size: 0.7em;
+            }
+        }
+        .botonAdmin:hover {
+            text-decoration: none;
+            color:#007c98 !important;
+        }
     </style>
 </head>
 <body>
@@ -106,9 +131,9 @@
             <% if (isAdmin) { %>
                 <div class="contenedorDerecho">
                     <div class="admin-container">
-                        <a href="/new" class="btn btn-sm btn-primary">Agregar nuevo</a>
-                        <a href="/admin_roles" class="btn btn-sm btn-primary">Roles</a>
-                        <a href="/users" class="btn btn-sm btn-primary">Editar Usuario</a>
+                        <a href="/new" class="boton botonAdmin"><i class="fas fa-plus"></i>New PBi</a>
+                        <a href="/users" class="boton botonAdmin"><i class="fas fa-user"></i>Usuarios</a>
+                        <a href="/admin_roles" class="boton botonAdmin"><i class="fas fa-user-cog"></i>Roles</a>
                     </div>
                 </div>
             <% } %>
@@ -132,10 +157,10 @@
                                 <td><%= item.categoria %></td>
                                 <td><%= item.nombre %></td>
                                 <td><%= item.descripcion %></td>
-                                <td><a href="#" class="btn btn-sm btn-info open-powerbi-modal" data-link="<%= item.link %>">Enlace</a></td>
-                                <td><%= item.vigencia %></td>
+                                <td class="center"><a href="#" class="btn btn-sm btn-info open-powerbi-modal" data-link="<%= item.link %>">Enlace</a></td>
+                                <td class="text-center"><%= item.vigencia %></td>
                                 <% if (isAdmin) { %>
-                                    <td>
+                                    <td class="center">
                                         <a href="/edit/<%= item.id %>" class="btn btn-sm btn-primary">Editar</a>
                                     </td>
                                 <% } %>
