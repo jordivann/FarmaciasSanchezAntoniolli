@@ -93,15 +93,18 @@ body {
     border: 2px solid #007c98;
     margin-top: 2px;
 }
+.botonAdminNav:hover{
+    color:#ea9e04 !important;
+}
 </style>
 <% if (isAdmin) { %>
 <div id="mySidenav" class="sidenav collapsed">
     <span class="togglebtn" onclick="toggleNav()"><i class="fas fa-bars" id="toggle"></i></span>
     <% if (isAdmin) { %>
         <div class="menuAdmin">
-            <a href="/new" class="btn btn-sm botonAdmin"><i class="fas fa-plus"></i><span>Nuevo PowerBi</span></a>
-            <a href="/users" class="btn btn-sm botonAdmin"><i class="fas fa-user"></i><span>Usuarios</span></a>
-            <a href="/admin_roles" class="btn btn-sm botonAdmin"><i class="fas fa-user-cog"></i><span>Roles usuarios</span></a>
+            <a href="/new" class="btn btn-sm botonAdmin botonAdminNav"><i class="fas fa-plus"></i><span>Nuevo PowerBi</span></a>
+            <a href="/users" class="btn btn-sm botonAdmin botonAdminNav"><i class="fas fa-user"></i><span>Usuarios</span></a>
+            <a href="/admin_roles" class="btn btn-sm botonAdmin botonAdminNav"><i class="fas fa-user-cog"></i><span>Roles usuarios</span></a>
         </div>
     <% } %>
     <div class="menu">
