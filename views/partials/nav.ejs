@@ -54,7 +54,7 @@ body {
     cursor: pointer;
     color: #007c98;
     z-index: 99;
-    transition: all .6s;
+    transition: all .6s linear;
 
     display:flex;
     align-items:center;
@@ -62,6 +62,11 @@ body {
     i{  
     font-size:.5em;
     }
+}
+.togglebtn:hover{
+    background-color:#ffc552;
+    color:#fff;
+    border: 1px solid #007c98;  
 }
 .sidenav.collapsed a i {
     margin: 0;
