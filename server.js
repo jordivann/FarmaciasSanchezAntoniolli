@@ -111,6 +111,23 @@ app.post('/edit/:id', requireAdmin, (req, res) => {
         res.redirect('/');
     });
 });
+// Ruta para eliminar un elemento (POST)
+app.post('/delete/:id', requireAdmin, (req, res) => {
+    const id = req.params.id;
+    pgClient.query('DELETE FROM data WHERE id = $1', [id], (err, result) => {
+        if (err) {
+            console.error('Error al eliminar el registro:', err);
+            return res.status(500).send('Error al eliminar el registro');
+        }
+        
+        if (result.rowCount === 0) {
+            return res.status(404).send('Registro no encontrado');
+        }
+        
+        res.status(200).send('Registro eliminado correctamente');
+    });
+});
+
 
 // Ruta para mostrar el listado de usuarios
 app.get('/users', requireAdmin, (req, res) => {
@@ -195,26 +212,6 @@ app.get('/edit_user/:id', requireAdmin, async (req, res) => {
     }
 });
 
-// Ruta para eliminar usuario
-
-app.post('/delete_user/:id', requireAdmin, async (req, res) => {
-    const userId = req.params.id;
-
-    try {
-        const query = 'DELETE FROM users WHERE id = $1 RETURNING *';
-        const { rows } = await pgClient.query(query, [userId]);
-
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
-        }
-
-        // No es necesario configurar un mensaje de éxito en la sesión aquí
-        res.status(200).json({ message: 'Usuario eliminado correctamente' });
-    } catch (err) {
-        console.error('Error al eliminar usuario:', err);
-        res.status(500).json({ message: 'Error al eliminar usuario' });
-    }
-});
 
 
 // Ruta para editar usuario
@@ -265,7 +262,25 @@ app.post('/new', requireAdmin, (req, res) => {
         res.redirect('/');
     });
 });
+// Ruta para eliminar un elemento
+app.post('/delete/:id', async (req, res) => {
+    const itemId = req.params.id;
 
+    try {
+        const query = 'DELETE FROM items WHERE id = $1 RETURNING *';
+        const { rows } = await pool.query(query, [itemId]);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Registro no encontrado');
+        }
+
+        // Redirigir o enviar una respuesta de éxito
+        res.redirect('/'); // O ajusta la redirección según sea necesario
+    } catch (err) {
+        console.error('Error al eliminar el registro:', err);
+        res.status(500).send('Error al eliminar el registro');
+    }
+});
 app.get('/login', (req, res) => {
     const query = 'SELECT id, username FROM users';
     pgClient.query(query, [], (err, result) => {

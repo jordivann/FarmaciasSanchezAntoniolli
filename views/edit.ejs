@@ -30,6 +30,17 @@
         .delete-button {
             margin-top: 20px;
         }
+        
+        .logo{
+            bottom:0;
+            display:flex;
+            align-items:center;
+            justify-content: center;
+            width:100%;
+            img{
+                width:40%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -60,12 +71,45 @@
                 <input type="text" id="vigencia" name="vigencia" class="form-control" value="<%= item.vigencia %>">
             </div>
             <button type="submit" class="btn btn-primary btn-block">Guardar Cambios</button>
-            <form action="/delete/<%= item.id %>" method="POST" class="delete-button">
-                <button type="submit" class="btn btn-danger btn-block">Eliminar Registro</button>
-            </form> 
+            <button type="button" class="btn btn-danger btn-block" onclick="deleteItem('<%= item.id %>')">Eliminar Registro</button>
+
         </form>
+        <!-- <form action="/delete/<%= item.id %>" method="POST" class="delete-button">
+            <button type="submit" class="btn btn-danger btn-block">Eliminar Registro</button>
+        </form>  -->
        
         
     </div>
+    <div class="logo">
+        <img src="./../images/Logo azul.png" alt="Logo" class="logo-img">
+    </div>
+    <script>
+        function deleteItem(itemId) {
+            fetch(`/delete/${itemId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Registro eliminado correctamente');
+                    window.location.href = '/';
+                } else if (response.status === 404) {
+                    alert('Registro no encontrado');
+                } else {
+                    alert('Error al eliminar el registro');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al eliminar el registro');
+            });
+        }
+        </script>
+        
+        
+        
 </body>
 </html>
