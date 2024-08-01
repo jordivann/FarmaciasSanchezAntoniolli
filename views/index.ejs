@@ -63,6 +63,12 @@
             border: 0;
             border-radius: 0;
         }
+        body.modal-open {
+            overflow: hidden;
+        }
+        /* .modal-backdrop{
+            overflow:hidden;
+        } */
         .modal-fullscreen .modal-body {
             height: calc(100vh - 56px - 56px); /* Descuenta la altura del header y del footer */
             padding: 0;
@@ -193,9 +199,6 @@
                         <!-- El informe que está intentando ver no está disponible aún. Para más información comunicarse con el Bicho Barber, e intentaremos resolver sus dudas. -->
                     </div>
                     <iframe id="powerBIFrame" width="100%" height="100%" frameborder="0" allowFullScreen="true" style="display:none;"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <img src="./images/Logo azul.png" alt="Logo" class="logo-img">
                 </div>
             </div>
         </div>
