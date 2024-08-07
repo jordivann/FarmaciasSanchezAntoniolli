@@ -55,12 +55,16 @@
             height: 100vh;
             border: 0;
             border-radius: 0;
+            position:relative;
         }
         body.modal-open {
             overflow: hidden;
+            display:flex;
+            align-items:center;
+            justify-content: center;
         }
         .modal-fullscreen .modal-body {
-            height: calc(100vh - 56px - 56px); /* Descuenta la altura del header y del footer */
+            height: calc(100vh - 56px - 56px); 
             padding: 0;
         }
         .modal-header {
@@ -83,6 +87,11 @@
             align-items:center;
             justify-content: center;
             width:100%;
+        }
+        .logo img{
+            
+            max-width: 350px;
+        
         }
         .center{
             display:flex;
@@ -121,6 +130,9 @@
         }
         .carousel-control-prev,
         .carousel-control-next {
+            position:absolute;
+            top:50%;
+            height:5%;
             width: 5%;
         }
     </style>
@@ -190,7 +202,7 @@
                         <%- include('partials/banner', { showBackButton: false, loggedIn: false }) %>
                         Informe no disponible
                     </div>
-                    <div id="powerBICarousel" class="carousel slide" data-ride="carousel">
+                    <div id="powerBICarousel" class="carousel slide" >
                         <div class="carousel-inner">
                             <% data.forEach((item, index) => { %>
                                 <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
@@ -200,11 +212,11 @@
                         </div>
                         <a class="carousel-control-prev" href="#powerBICarousel" role="button" data-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
+                            <span class="sr-only"></span>
                         </a>
                         <a class="carousel-control-next" href="#powerBICarousel" role="button" data-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
+                            <span class="sr-only"></span>
                         </a>
                     </div>
                 </div>
