@@ -89,6 +89,7 @@ app.get('/', requireLogin, (req, res) => {
     });
 });
 
+
 app.get('/edit/:id', requireAdmin, (req, res) => {
     const id = req.params.id;
     const isAdmin = req.session.isAdmin === true;
