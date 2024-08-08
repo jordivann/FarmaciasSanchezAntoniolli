@@ -205,9 +205,11 @@
                     <div id="powerBICarousel" class="carousel slide" >
                         <div class="carousel-inner">
                             <% data.forEach((item, index) => { %>
-                                <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
-                                    <iframe class="d-block w-100" src="<%= item.link %>" id="powerBIFrame" frameborder="0" allowFullScreen="true" style="height: calc(100vh - 112px);"></iframe>
-                                </div>
+                                <% if (item.vigencia === "Vigente") { %>
+                                    <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                                        <iframe class="d-block w-100" src="<%= item.link %>" id="powerBIFrame" frameborder="0" allowFullScreen="true" style="height: calc(100vh - 112px);"></iframe>
+                                    </div>
+                                <% } %>
                             <% }); %>
                         </div>
                         <a class="carousel-control-prev" href="#powerBICarousel" role="button" data-slide="prev">
