@@ -174,7 +174,7 @@
                                 <td><%= item.categoria %></td>
                                 <td><%= item.nombre %></td>
                                 <td><%= item.descripcion %></td>
-                                <td class="center"><a href="#" class="btn btn-sm btn-info open-powerbi-modal" data-index="<%= index %>">Informe</a></td>
+                                <td class="center"><a href="#" class="btn btn-sm btn-info open-powerbi-modal" data-id="<%= item.id %>">Informe</a></td>
                                 <td class="text-center"><%= item.vigencia %></td>
                                 <% if (isAdmin) { %>
                                     <td class="center">
@@ -193,33 +193,37 @@
         <div class="modal-dialog modal-fullscreen" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div id="notAvailableMessage" style="display:none; color: red; text-align: center;">
-                        <%- include('partials/banner', { showBackButton: false, loggedIn: false }) %>
-                        Informe no disponible
-                    </div>
+                    
                     <div id="powerBICarousel" class="carousel slide" >
                         <div class="carousel-inner">
                             <% data.forEach((item, index) => { %>
-                                <% if (item.vigencia === "Vigente") { %>
-                                    <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
-                                        <iframe class="d-block w-100" src="<%= item.link %>" id="powerBIFrame" frameborder="0" allowFullScreen="true" style="height: calc(100vh - 112px);"></iframe>
-                                    </div>
-                                <% } %>
+                                <div class="carousel-item <%= index === 0 ? 'active' : '' %>" data-id="<%= item.id %>">
+                                    <% if (item.vigencia === "Vigente") { %>
+                                        <iframe id="powerBIFrame-<%= item.id %>" class="d-block w-100" src="<%= item.link %>" frameborder="0" allowFullScreen="true" style="height: calc(100vh - 112px);"></iframe>
+                                    <% } else { %>
+                                        <div class="d-block w-100 h-100">
+                                            <%- include('partials/banner', { showBackButton: false, loggedIn: false }) %>
+                                            Informe no disponible
+                                        </div>
+                                    <% } %>
+                                    
+                                </div>
+
                             <% }); %>
-                        </div>
-                        <a class="carousel-control-prev" href="#powerBICarousel" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">prev</span>
-                        </a>
-                        <a class="carousel-control-next" href="#powerBICarousel" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">next</span>
-                        </a>
+                            <a class="carousel-control-prev" href="#powerBICarousel" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">prev</span>
+                            </a>
+                            <a class="carousel-control-next" href="#powerBICarousel" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">next</span>
+                            </a>
                     </div>
                 </div>
             </div>
@@ -230,14 +234,30 @@
     </div>
 
     <script>
-        $(document).ready(function() {
+/*        $(document).ready(function() {
             $('.open-powerbi-modal').on('click', function(e) {
                 e.preventDefault();
                 var index = $(this).data('index');
                 $('#powerBICarousel').carousel(index);
                 $('#powerBIModal').modal('show');
             });
+        });*/
+        $(document).ready(function() {
+            $('.open-powerbi-modal').on('click', function(e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                
+                // Encuentra el slide correspondiente al ID
+                var slideIndex = $(`.carousel-item[data-id="${id}"]`).index();
+
+                // Mueve el carrusel al slide correspondiente
+                $('#powerBICarousel').carousel(slideIndex);
+                
+                // Muestra el modal
+                $('#powerBIModal').modal('show');
+            });
         });
+
     </script>
 </body>
 </html>
