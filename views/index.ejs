@@ -32,6 +32,13 @@
             background-color: #f1f1f1;
             border-radius: 10px;
         }
+        .table thead th{
+            text-align:center;
+        }
+        .table tbody tr td{
+            text-align: center;
+            align-content: center;
+        }
         .admin-container {
             display: flex;
             align-items: center;
@@ -59,9 +66,6 @@
         }
         body.modal-open {
             overflow: hidden;
-            /* display:flex;
-            align-items:center;
-            justify-content: center; */
         }
         .modal-fullscreen .modal-body {
             height: calc(100vh - 56px - 56px); 
@@ -174,10 +178,10 @@
                                 <td><%= item.categoria %></td>
                                 <td><%= item.nombre %></td>
                                 <td><%= item.descripcion %></td>
-                                <td class="center"><a href="#" class="btn btn-sm btn-info open-powerbi-modal" data-id="<%= item.id %>">Informe</a></td>
-                                <td class="text-center"><%= item.vigencia %></td>
+                                <td><a href="#" class="btn btn-sm btn-info open-powerbi-modal" data-id="<%= item.id %>">Informe</a></td>
+                                <td><%= item.vigencia %></td>
                                 <% if (isAdmin) { %>
-                                    <td class="center">
+                                    <td>
                                         <a href="/edit/<%= item.id %>" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
                                     </td>
                                 <% } %>
