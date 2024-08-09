@@ -20,6 +20,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-flow:column wrap;
             width: 100%;
             margin-top: 30px;
         }
@@ -191,6 +192,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="logo">
+            <img src="./images/Logo azul.png" alt="Logo" class="logo-img">
+        </div>
     </div>
     <!-- Modal -->
     <div class="modal fade" id="powerBIModal" tabindex="-1" role="dialog" aria-labelledby="powerBIModalLabel" aria-hidden="true">
@@ -206,7 +210,7 @@
                     <div id="powerBICarousel" class="carousel slide" >
                         <div class="carousel-inner">
                             <% data.forEach((item, index) => { %>
-                                <div class="carousel-item <%= index === 0 ? 'active' : '' %>" data-id="<%= item.id %>">
+                                <div class="carousel-item <%= index === 0 ? 'active' : '' %>" data-id="<%= item.id %>" data-ride="carousel" data-interval="false">
                                     <% if (item.vigencia === "Vigente") { %>
                                         <iframe id="powerBIFrame-<%= item.id %>" class="d-block w-100" src="<%= item.link %>" frameborder="0" allowFullScreen="true" style="height: calc(100vh - 112px);"></iframe>
                                     <% } else { %>
@@ -232,9 +236,7 @@
             </div>
         </div>
     </div>
-    <div class="logo">
-        <img src="./images/Logo azul.png" alt="Logo" class="logo-img">
-    </div>
+
 
     <script>
 /*        $(document).ready(function() {
