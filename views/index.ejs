@@ -199,7 +199,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    
                     <div id="powerBICarousel" class="carousel slide" >
                         <div class="carousel-inner">
                             <% data.forEach((item, index) => { %>
@@ -207,7 +206,7 @@
                                     <% if (item.vigencia === "Vigente") { %>
                                         <iframe id="powerBIFrame-<%= item.id %>" class="d-block w-100" src="<%= item.link %>" frameborder="0" allowFullScreen="true" style="height: calc(100vh - 112px);"></iframe>
                                     <% } else { %>
-                                        <div class="d-block w-100 h-100">
+                                        <div class="d-block w-100">
                                             <%- include('partials/banner', { showBackButton: false, loggedIn: false }) %>
                                             Informe no disponible
                                         </div>
