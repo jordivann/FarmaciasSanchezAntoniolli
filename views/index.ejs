@@ -239,15 +239,28 @@
 
 
     <script>
-/*        $(document).ready(function() {
-            $('.open-powerbi-modal').on('click', function(e) {
-                e.preventDefault();
-                var index = $(this).data('index');
-                $('#powerBICarousel').carousel(index);
-                $('#powerBIModal').modal('show');
-            });
-        });*/
+
+        // $(document).ready(function() {
+        //     $('.open-powerbi-modal').on('click', function(e) {
+        //         e.preventDefault();
+        //         var id = $(this).data('id');
+                
+        //         // Encuentra el slide correspondiente al ID
+        //         var slideIndex = $(`.carousel-item[data-id="${id}"]`).index();
+
+        //         // Mueve el carrusel al slide correspondiente
+        //         $('#powerBICarousel').carousel(slideIndex);
+                
+        //         // Muestra el modal
+        //         $('#powerBIModal').modal('show');
+        //     });
+        // });
+
         $(document).ready(function() {
+            $('#powerBICarousel').carousel({
+                interval: false
+            });
+
             $('.open-powerbi-modal').on('click', function(e) {
                 e.preventDefault();
                 var id = $(this).data('id');
