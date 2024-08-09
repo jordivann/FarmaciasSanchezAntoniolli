@@ -20,6 +20,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-flow:column wrap;
             width: 100%;
             margin-top: 30px;
         }
@@ -31,6 +32,13 @@
         .table {
             background-color: #f1f1f1;
             border-radius: 10px;
+        }
+        .table thead th{
+            text-align:center;
+        }
+        .table tbody tr td{
+            text-align: center;
+            align-content: center;
         }
         .admin-container {
             display: flex;
@@ -59,9 +67,6 @@
         }
         body.modal-open {
             overflow: hidden;
-            /* display:flex;
-            align-items:center;
-            justify-content: center; */
         }
         .modal-fullscreen .modal-body {
             height: calc(100vh - 56px - 56px); 
@@ -174,10 +179,10 @@
                                 <td><%= item.categoria %></td>
                                 <td><%= item.nombre %></td>
                                 <td><%= item.descripcion %></td>
-                                <td class="center"><a href="#" class="btn btn-sm btn-info open-powerbi-modal" data-id="<%= item.id %>">Informe</a></td>
-                                <td class="text-center"><%= item.vigencia %></td>
+                                <td><a href="#" class="btn btn-sm btn-info open-powerbi-modal" data-id="<%= item.id %>">Informe</a></td>
+                                <td><%= item.vigencia %></td>
                                 <% if (isAdmin) { %>
-                                    <td class="center">
+                                    <td>
                                         <a href="/edit/<%= item.id %>" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
                                     </td>
                                 <% } %>
@@ -186,6 +191,9 @@
                     <% }); %>
                 </tbody>
             </table>
+        </div>
+        <div class="logo">
+            <img src="./images/Logo azul.png" alt="Logo" class="logo-img">
         </div>
     </div>
     <!-- Modal -->
@@ -202,7 +210,7 @@
                     <div id="powerBICarousel" class="carousel slide" >
                         <div class="carousel-inner">
                             <% data.forEach((item, index) => { %>
-                                <div class="carousel-item <%= index === 0 ? 'active' : '' %>" data-id="<%= item.id %>">
+                                <div class="carousel-item <%= index === 0 ? 'active' : '' %>" data-id="<%= item.id %>" data-ride="carousel" data-interval="false">
                                     <% if (item.vigencia === "Vigente") { %>
                                         <iframe id="powerBIFrame-<%= item.id %>" class="d-block w-100" src="<%= item.link %>" frameborder="0" allowFullScreen="true" style="height: calc(100vh - 112px);"></iframe>
                                     <% } else { %>
@@ -228,9 +236,7 @@
             </div>
         </div>
     </div>
-    <div class="logo">
-        <img src="./images/Logo azul.png" alt="Logo" class="logo-img">
-    </div>
+
 
     <script>
 /*        $(document).ready(function() {
