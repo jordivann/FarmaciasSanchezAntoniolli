@@ -69,8 +69,9 @@
             overflow: hidden;
         }
         .modal-fullscreen .modal-body {
-            height: calc(100vh - 56px - 56px); 
+            height: calc(100vh); 
             padding: 0;
+            margin-bottom:4px;
         }
         .modal-header {
             max-height: 2px !important;
@@ -78,9 +79,6 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-        }
-        .modal-footer {
-            max-height: 10px;
         }
         #powerBIFrame {
             width: 100%;
@@ -139,6 +137,21 @@
             top:50%;
             height:5%;
             width: 5%;
+        }
+        #powerBICarousel,
+        #powerBICarousel .carousel-inner,
+        .carousel-item,
+        .carousel-item .active{
+            height: 100% ;
+        }
+        
+        .frameBI-n {
+            height:98% !important;
+        }
+
+        .headerTitle{
+            font-size: .8em;
+            color: #e7e7e7;
         }
     </style>
 </head>
@@ -202,6 +215,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     
+                    <span class="headerTitle">Farmacias Sanchez Antoniolli</span>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -212,7 +226,7 @@
                             <% data.forEach((item, index) => { %>
                                 <div class="carousel-item <%= index === 0 ? 'active' : '' %>" data-id="<%= item.id %>" data-ride="carousel" data-interval="false">
                                     <% if (item.vigencia === "Vigente") { %>
-                                        <iframe id="powerBIFrame-<%= item.id %>" class="d-block w-100" src="<%= item.link %>" frameborder="0" allowFullScreen="true" style="height: calc(100vh - 112px);"></iframe>
+                                        <iframe id="powerBIFrame-<%= item.id %> " class="d-block w-100 frameBI-n" src="<%= item.link %>" frameborder="0" allowFullScreen="true" style="height: calc(100vh - 112px);"></iframe>
                                     <% } else { %>
                                         <div class="d-block w-100">
                                             <%- include('partials/banner', { showBackButton: false, loggedIn: false }) %>
@@ -239,23 +253,6 @@
 
 
     <script>
-
-        // $(document).ready(function() {
-        //     $('.open-powerbi-modal').on('click', function(e) {
-        //         e.preventDefault();
-        //         var id = $(this).data('id');
-                
-        //         // Encuentra el slide correspondiente al ID
-        //         var slideIndex = $(`.carousel-item[data-id="${id}"]`).index();
-
-        //         // Mueve el carrusel al slide correspondiente
-        //         $('#powerBICarousel').carousel(slideIndex);
-                
-        //         // Muestra el modal
-        //         $('#powerBIModal').modal('show');
-        //     });
-        // });
-
         $(document).ready(function() {
             $('#powerBICarousel').carousel({
                 interval: false
