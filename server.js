@@ -1,14 +1,10 @@
 const express = require('express');
 const session = require('express-session');
-const { Client } = require('pg');
+const pool = require('./db'); // Ahora usamos el pool en lugar del client directo
 const bodyParser = require('body-parser');
 const Swal = require('sweetalert2');
 const dotenv = require('dotenv');
-const pgClient = require('./db'); // Importar la configuración de la base de datos
 const bcrypt = require('bcrypt');
-
-
-
 
 dotenv.config();
 
@@ -40,10 +36,6 @@ app.use(session({
     saveUninitialized: true,
 }));
 
-// Configurar conexión a PostgreSQL
-// Configurar conexión a PostgreSQL
-
-
 // Middleware para verificar si el usuario está autenticado
 function requireLogin(req, res, next) {
     if (req.session.userId) {
@@ -56,7 +48,7 @@ function requireLogin(req, res, next) {
 // Middleware para verificar si el usuario es administrador
 function requireAdmin(req, res, next) {
     if (req.session.userId) {
-        pgClient.query('SELECT isadmin FROM users WHERE id = $1', [req.session.userId], (err, result) => {
+        pool.query('SELECT isadmin FROM users WHERE id = $1', [req.session.userId], (err, result) => {
             if (err) {
                 throw err;
             }
@@ -80,7 +72,7 @@ app.get('/', requireLogin, (req, res) => {
         const roles = req.session.roles.map(role => `'${role.trim()}'`).join(',');
         query += ` WHERE categoria IN (${roles})`;
     }
-    pgClient.query(query, params, (err, result) => {
+    pool.query(query, params, (err, result) => {
         if (err) {
             throw err;
         }
@@ -89,80 +81,70 @@ app.get('/', requireLogin, (req, res) => {
     });
 });
 
-
 app.get('/edit/:id', requireAdmin, (req, res) => {
     const id = req.params.id;
     const isAdmin = req.session.isAdmin === true;
-    pgClient.query('SELECT * FROM data WHERE id = $1', [id], (err, result) => {
+    pool.query('SELECT * FROM data WHERE id = $1', [id], (err, result) => {
         if (err) {
             throw err;
         }
-        
-        res.render('edit', { item: result.rows[0] ,isAdmin});
+        res.render('edit', { item: result.rows[0], isAdmin });
     });
 });
 
 app.post('/edit/:id', requireAdmin, (req, res) => {
     const id = req.params.id;
     const { categoria, nombre, descripcion, link, vigencia } = req.body;
-    pgClient.query('UPDATE data SET categoria = $1, nombre = $2, descripcion = $3, link = $4, vigencia = $5 WHERE id = $6', [categoria, nombre, descripcion, link, vigencia, id], (err) => {
+    pool.query('UPDATE data SET categoria = $1, nombre = $2, descripcion = $3, link = $4, vigencia = $5 WHERE id = $6', [categoria, nombre, descripcion, link, vigencia, id], (err) => {
         if (err) {
             throw err;
         }
         res.redirect('/');
     });
 });
-// Ruta para eliminar un elemento (POST)
+
 app.post('/delete/:id', requireAdmin, (req, res) => {
     const id = req.params.id;
-    pgClient.query('DELETE FROM data WHERE id = $1', [id], (err, result) => {
+    pool.query('DELETE FROM data WHERE id = $1', [id], (err, result) => {
         if (err) {
             console.error('Error al eliminar el registro:', err);
             return res.status(500).send('Error al eliminar el registro');
         }
-        
+
         if (result.rowCount === 0) {
             return res.status(404).send('Registro no encontrado');
         }
-        
+
         res.status(200).send('Registro eliminado correctamente');
     });
 });
 
-
-// Ruta para mostrar el listado de usuarios
 app.get('/users', requireAdmin, (req, res) => {
-    pgClient.query('SELECT id, username, isadmin FROM users ORDER BY id ASC', (err, result) => {
+    pool.query('SELECT id, username, isadmin FROM users ORDER BY id ASC', (err, result) => {
         if (err) {
             console.error('Error al obtener usuarios:', err);
             res.status(500).send('Error al obtener usuarios');
         } else {
             const users = result.rows;
             const isAdmin = req.session.isAdmin === true;
-            res.render('users_index', { users, isAdmin});
+            res.render('users_index', { users, isAdmin });
         }
     });
 });
 
-
-// Define la ruta para mostrar el formulario de nuevo usuario
 app.get('/users/new', requireAdmin, (req, res) => {
-    // Verifica si el usuario actual es administrador
     if (req.session.isAdmin) {
         const isAdmin = req.session.isAdmin === true;
-        res.render('new_user', {isAdmin}); // Renderiza la vista EJS para agregar nuevo usuario
+        res.render('new_user', { isAdmin });
     } else {
-        res.status(403).send('Acceso denegado'); // Si no es administrador, devuelve un error 403
+        res.status(403).send('Acceso denegado');
     }
 });
-
-//Nuevo Usuario
 
 app.post('/users/new', async (req, res) => {
     const { username, password, email } = req.body;
     let { isAdmin } = req.body;
 
-    // Asegúrate de que isAdmin tenga un valor predeterminado de false si no está presente en la solicitud
     if (isAdmin === undefined) {
         isAdmin = false;
     }
@@ -172,15 +154,10 @@ app.post('/users/new', async (req, res) => {
             return res.status(400).send('Debe proporcionar una contraseña');
         }
 
-        const query = `
-            INSERT INTO users (username, password, isAdmin, email)
-            VALUES ($1, $2, $3, $4)
-            RETURNING *
-        `;
+        const query = 'INSERT INTO users (username, password, isAdmin, email) VALUES ($1, $2, $3, $4) RETURNING *';
         const values = [username, password, isAdmin, email];
 
-        const result = await pgClient.query(query, values);
-
+        const result = await pool.query(query, values);
         res.redirect('/admin_roles');
     } catch (err) {
         console.error('Error al agregar usuario:', err);
@@ -188,17 +165,12 @@ app.post('/users/new', async (req, res) => {
     }
 });
 
-
-
-
-
-// Ruta para cargar el formulario de edición de usuario
 app.get('/edit_user/:id', requireAdmin, async (req, res) => {
     const userId = req.params.id;
 
     try {
         const query = 'SELECT id, username, password, isAdmin FROM users WHERE id = $1';
-        const { rows } = await pgClient.query(query, [userId]);
+        const { rows } = await pool.query(query, [userId]);
 
         if (rows.length === 0) {
             return res.status(404).send('Usuario no encontrado');
@@ -206,17 +178,13 @@ app.get('/edit_user/:id', requireAdmin, async (req, res) => {
 
         const user = rows[0];
         const isAdmin = req.session.isAdmin === true;
-        res.render('edit_user', { user, isAdmin }); // Renderiza el formulario de edición con los datos del usuario
+        res.render('edit_user', { user, isAdmin });
     } catch (err) {
         console.error('Error al cargar formulario de edición:', err);
         res.status(500).send('Error al cargar formulario de edición');
     }
 });
 
-
-
-// Ruta para editar usuario
-// Ruta para editar usuario sin encriptar la contraseña
 app.post('/edit_user/:id', async (req, res) => {
     const userId = req.params.id;
     const { username, password, isAdmin } = req.body;
@@ -224,72 +192,65 @@ app.post('/edit_user/:id', async (req, res) => {
     try {
         let query, values;
         if (password) {
-            // Actualizar con nueva contraseña
             query = 'UPDATE users SET username = $1, password = $2, isAdmin = $3 WHERE id = $4 RETURNING *';
             values = [username, password, isAdmin, userId];
         } else {
-            // Actualizar sin cambiar la contraseña
             query = 'UPDATE users SET username = $1, isAdmin = $2 WHERE id = $3 RETURNING *';
             values = [username, isAdmin, userId];
         }
 
-        const { rows } = await pgClient.query(query, values);
+        const { rows } = await pool.query(query, values);
         if (rows.length === 0) {
             return res.status(404).send('Usuario no encontrado');
         }
 
-        res.redirect('/'); // Redirige después de editar
+        res.redirect('/');
     } catch (err) {
         console.error('Error al editar usuario:', err);
         res.status(500).send('Error al editar usuario');
     }
 });
 
-
-
-
 app.get('/new', requireAdmin, (req, res) => {
-    
     const isAdmin = req.session.isAdmin === true;
-    res.render('new', {isAdmin});
+    res.render('new', { isAdmin });
 });
 
 app.post('/new', requireAdmin, (req, res) => {
     const { categoria, nombre, descripcion, link, vigencia } = req.body;
-    pgClient.query('INSERT INTO data (categoria, nombre, descripcion, link, vigencia) VALUES ($1, $2, $3, $4, $5)', [categoria, nombre, descripcion, link, vigencia], (err) => {
+    pool.query('INSERT INTO data (categoria, nombre, descripcion, link, vigencia) VALUES ($1, $2, $3, $4, $5)', [categoria, nombre, descripcion, link, vigencia], (err) => {
         if (err) {
             throw err;
         }
         res.redirect('/');
     });
 });
-// Ruta para eliminar un elemento
+
 app.post('/delete/:id', async (req, res) => {
     const itemId = req.params.id;
 
     try {
-        const query = 'DELETE FROM items WHERE id = $1 RETURNING *';
+        const query = 'DELETE FROM data WHERE id = $1 RETURNING *';
         const { rows } = await pool.query(query, [itemId]);
 
         if (rows.length === 0) {
             return res.status(404).send('Registro no encontrado');
         }
 
-        // Redirigir o enviar una respuesta de éxito
-        res.redirect('/'); // O ajusta la redirección según sea necesario
+        res.redirect('/'); // Redirige a la página principal después de eliminar
     } catch (err) {
         console.error('Error al eliminar el registro:', err);
         res.status(500).send('Error al eliminar el registro');
     }
 });
+
 app.get('/login', (req, res) => {
     const query = 'SELECT id, username FROM users';
-    pgClient.query(query, [], (err, result) => {
+    pool.query(query, [], (err, result) => {
         if (err) {
             console.error('Error al ejecutar la consulta:', err);
             res.status(500).send('Error al obtener los nombres de usuario');
         } else {
-            
             const isAdmin = req.session.isAdmin === true;
             res.render('login', { users: result.rows, isAdmin });
         }
@@ -298,7 +259,7 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    pgClient.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password], (err, result) => {
+    pool.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password], (err, result) => {
         if (err) {
             throw err;
         }
@@ -322,15 +283,16 @@ app.get('/logout', (req, res) => {
         res.redirect('/');
     });
 });
+
 app.get('/admin_roles', requireAdmin, (req, res) => {
     // Obtener todas las categorías disponibles desde la tabla 'data'
-    pgClient.query('SELECT DISTINCT categoria FROM data', (err, resultCategories) => {
+    pool.query('SELECT DISTINCT categoria FROM data', (err, resultCategories) => {
         if (err) {
             throw err;
         }
         const categories = resultCategories.rows;
         // Obtener todos los usuarios y sus roles
-        pgClient.query('SELECT id, username, roles FROM users', (err, resultUsers) => {
+        pool.query('SELECT id, username, roles FROM users', (err, resultUsers) => {
             if (err) {
                 throw err;
             }
@@ -344,17 +306,12 @@ app.get('/admin_roles', requireAdmin, (req, res) => {
                 }
                 user.rolesText = user.roles.join(', '); // Crear rolesText para mostrar en la vista
             });
-            // Renderizar la vista 'admin_roles' con los usuarios y categorías obtenidos
-            
             const isAdmin = req.session.isAdmin === true;
             res.render('admin_roles', { users, categories, successMessage: req.session.successMessage, isAdmin });
-            // Limpiar el mensaje de éxito después de mostrarlo una vez
-            req.session.successMessage = null;
+            req.session.successMessage = null; // Limpiar el mensaje de éxito después de mostrarlo una vez
         });
     });
 });
-
-
 
 // Ruta para modificar roles de usuarios
 app.post('/admin_roles/update', requireAdmin, (req, res) => {
@@ -371,11 +328,10 @@ app.post('/admin_roles/update', requireAdmin, (req, res) => {
     }
 
     // Ejemplo de actualización en la base de datos
-    pgClient.query('UPDATE users SET roles = $1 WHERE id = $2', [rolesString, userId], (err) => {
+    pool.query('UPDATE users SET roles = $1 WHERE id = $2', [rolesString, userId], (err) => {
         if (err) {
             throw err;
         }
-        // Configurar el mensaje de éxito en la sesión para mostrarlo en la próxima carga de página
         req.session.successMessage = 'Roles actualizados correctamente';
         res.redirect('/admin_roles');
     });
@@ -391,3 +347,4 @@ app.use((req, res, next) => {
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
