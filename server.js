@@ -1,6 +1,8 @@
 const express = require('express');
 const session = require('express-session');
-const pool = require('./db'); // Ahora usamos el pool en lugar del client directo
+const RedisStore = require('connect-redis')(session); // Para usar Redis con express-session
+const redis = require('redis'); // Crear el cliente de Redis
+const pool = require('./db'); // Tu configuración de la base de datos PostgreSQL
 const bodyParser = require('body-parser');
 const Swal = require('sweetalert2');
 const dotenv = require('dotenv');
@@ -10,6 +12,28 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Crear cliente de Redis usando la URL del archivo .env
+const redisClient = redis.createClient({
+  url: process.env.REDIS_URL || 'redis://default:wWTBdOMcDFPHXvbtjTIpCGKYwzlkkqDH@junction.proxy.rlwy.net:44774'
+});
+
+redisClient.on('error', (err) => {
+  console.log('Redis Client Error', err);
+});
+
+// Configurar middleware de sesión para usar Redis
+app.use(session({
+    store: new RedisStore({ client: redisClient }), // Usar Redis como almacenamiento de sesión
+    secret: 'secret-key', // Cambiar por una clave segura en producción
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false, // Usar true si usas HTTPS
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 // Sesión expira en 1 día
+    }
+}));
 
 // Configuración de SweetAlert2
 const SwalMixin = Swal.mixin({
@@ -28,13 +52,6 @@ const SwalMixin = Swal.mixin({
 app.set('view engine', 'ejs'); // Motor de plantillas EJS
 app.use(express.static('public')); // Carpeta para archivos estáticos
 app.use(bodyParser.urlencoded({ extended: true })); // Parsear body de las peticiones POST
-
-// Configurar middleware para manejar sesiones
-app.use(session({
-    secret: 'secret-key', // Cambiar por una clave segura en producción
-    resave: false,
-    saveUninitialized: true,
-}));
 
 // Middleware para verificar si el usuario está autenticado
 function requireLogin(req, res, next) {
@@ -95,7 +112,8 @@ app.get('/edit/:id', requireAdmin, (req, res) => {
 app.post('/edit/:id', requireAdmin, (req, res) => {
     const id = req.params.id;
     const { categoria, nombre, descripcion, link, vigencia } = req.body;
-    pool.query('UPDATE data SET categoria = $1, nombre = $2, descripcion = $3, link = $4, vigencia = $5 WHERE id = $6', [categoria, nombre, descripcion, link, vigencia, id], (err) => {
+    pool.query('UPDATE data SET categoria = $1, nombre = $2, descripcion = $3, link = $4, vigencia = $5 WHERE id = $6', 
+        [categoria, nombre, descripcion, link, vigencia, id], (err) => {
         if (err) {
             throw err;
         }
@@ -133,12 +151,8 @@ app.get('/users', requireAdmin, (req, res) => {
 });
 
 app.get('/users/new', requireAdmin, (req, res) => {
-    if (req.session.isAdmin) {
-        const isAdmin = req.session.isAdmin === true;
-        res.render('new_user', { isAdmin });
-    } else {
-        res.status(403).send('Acceso denegado');
-    }
+    const isAdmin = req.session.isAdmin === true;
+    res.render('new_user', { isAdmin });
 });
 
 app.post('/users/new', async (req, res) => {
@@ -218,7 +232,8 @@ app.get('/new', requireAdmin, (req, res) => {
 
 app.post('/new', requireAdmin, (req, res) => {
     const { categoria, nombre, descripcion, link, vigencia } = req.body;
-    pool.query('INSERT INTO data (categoria, nombre, descripcion, link, vigencia) VALUES ($1, $2, $3, $4, $5)', [categoria, nombre, descripcion, link, vigencia], (err) => {
+    pool.query('INSERT INTO data (categoria, nombre, descripcion, link, vigencia) VALUES ($1, $2, $3, $4, $5)', 
+        [categoria, nombre, descripcion, link, vigencia], (err) => {
         if (err) {
             throw err;
         }
@@ -337,6 +352,11 @@ app.post('/admin_roles/update', requireAdmin, (req, res) => {
     });
 });
 
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+});
+
+
 // Middleware para agregar información de autenticación a las vistas
 app.use((req, res, next) => {
     res.locals.isAuthenticated = !!req.session.userId;
@@ -347,4 +367,3 @@ app.use((req, res, next) => {
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
-
